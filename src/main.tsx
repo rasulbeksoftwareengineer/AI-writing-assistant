@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import DashboardLayouts from './components/layouts/dashboard-layouts';
+import ContentCreate from './components/dashboard/content-create';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -14,7 +15,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <h1>Chat page</h1>
+        element: <ContentCreate/>
       }
     ]
   },
