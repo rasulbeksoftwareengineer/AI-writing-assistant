@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 export default function DashboardLayouts() {
   
   return (
-    <div className="flex">
+    <div className="h-screen overflow-x-hidden flex">
       <Sidebar />
       <div className="w-full">
         <Navbar />
