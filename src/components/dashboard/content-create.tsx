@@ -4,6 +4,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Loader2 } from "lucide-react";
+import { generateArticle } from "@/utils/openai";
 
 export default function ContentCreate() {
     const [isLoading, setIsLoading] = useState(false);
@@ -11,10 +12,13 @@ export default function ContentCreate() {
         title: '',
         descrption: '',
     })
-    const handleSubmit = (event: FormEvent) => {
+    const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         setIsLoading(true)
-        console.log(form);
+        const result = await generateArticle(form.title, form.descrption);
+        console.log(result);
+        setIsLoading(false);
+        
     }
     const handleChange = (event: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.currentTarget;
@@ -25,11 +29,11 @@ export default function ContentCreate() {
         <form className="mt-4" onSubmit={handleSubmit}>
             <div className="grid w-full items-center gap-1.5 mb-4">
                 <Label htmlFor="title">Mavzu</Label>
-                <Input type="text" id="title" name="title" placeholder="Mavzu nomi" onChange={handleChange} disabled={isLoading} />
+                <Input type="text" value='Next JS' id="title" name="title" placeholder="Mavzu nomi" onChange={handleChange} disabled={isLoading} />
             </div>
             <div className="grid w-full gap-1.5 mb-4">
                 <Label htmlFor="descrption">Descrption</Label>
-                <Textarea id="descrption" name="descrption" placeholder="Enter your descrption" onChange={handleChange} disabled={isLoading} />
+                <Textarea id="descrption" value='Write me about Next JS routing' name="descrption" placeholder="Enter your descrption" onChange={handleChange} disabled={isLoading} />
             </div>
             <Button disabled={isLoading}>
                 {isLoading && <Loader2 className="animate-spin" />}
