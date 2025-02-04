@@ -26,7 +26,7 @@ export default function ContentViewer({ content }: ContentViewerProps) {
 
         <Card className="mt-4">
 
-            <CardContent className="p-8">
+            <CardContent className="p-8">``
 
                 <div className="prose lg:prose-xl">
 

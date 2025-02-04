@@ -1,49 +1,72 @@
-import { FormEvent, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Textarea } from "../ui/textarea";
-import { Loader2 } from "lucide-react";
+import { z } from 'zod';
 import { ContentCreateRequestParam } from "@/shared/types/content-create-request-params";
+import { useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { Loader2 } from "lucide-react";
 
 type ContentCreateFormProps = {
     isLoading: boolean;
     onSubmit: (params: ContentCreateRequestParam) => void;
 }
 
-export default function ContentCreateForm({
-        isLoading, onSubmit
-    }: ContentCreateFormProps) {
+const formSchema = z.object({
+    title: z.string().min(1, "Sizda eng kamida 1 symboldan iborat Mavzu bo'lishi kerak").max(500),
+    descrpition: z.string().min(1, "Sizda eng kamida 1 symboldan iborat Mavzu bo'lishi kerak").max(1000),
+})
 
-    const [form, setForm] = useState<ContentCreateRequestParam>({
-        title: '',
-        descrption: '',
+export default function ContentCreateForm({
+    isLoading, onSubmit
+}: ContentCreateFormProps) {
+
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            title: '',
+            descrpition: ''
+        }
     })
 
-    const handleChange = (event: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = event.currentTarget;
-        setForm({ ...form, [name]: value });
-    }
+    const handleSubmit = (values: z.infer<typeof formSchema>) => {
+        onSubmit(values);
+    };
 
-    const handleSubmit = (event: FormEvent) => {
-        event.preventDefault();
-        onSubmit(form);
-    }
+
 
     return (
-        <form className="mt-4" onSubmit={handleSubmit}>
-            <div className="grid w-full items-center gap-1.5 mb-4">
-                <Label htmlFor="title">Mavzu</Label>
-                <Input type="text" value='Next JS' id="title" name="title" placeholder="Mavzu nomi" onChange={handleChange} disabled={isLoading} />
-            </div>
-            <div className="grid w-full gap-1.5 mb-4">
-                <Label htmlFor="descrption">Descrption</Label>
-                <Textarea id="descrption" value='Write me about Next JS routing' name="descrption" placeholder="Enter your descrption" onChange={handleChange} disabled={isLoading} />
-            </div>
-            <Button disabled={isLoading}>
-                {isLoading && <Loader2 className="animate-spin" />}
-                Generate
-            </Button>
-        </form>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 mt-4">
+                <FormField
+                    control={form.control} name="title"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Title</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Example: React js about in BrowserRouter" disabled={isLoading} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control} name="descrpition"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Descrpition</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Example: Write about react js in react-router-dom" disabled={isLoading} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <Button disabled={isLoading}>
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Generate
+                </Button>
+            </form>
+        </Form>
     )
 }
