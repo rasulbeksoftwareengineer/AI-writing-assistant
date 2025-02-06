@@ -3,6 +3,7 @@ import PromptHistory from "./prompt-history";
 import { TPromptHistory } from "@/shared/types/prompt-history.type";
 import { useAppContext } from "@/contexts/app.context";
 import clsx from "clsx";
+import { useContentContext } from "@/contexts/content.context";
 const mockItems: TPromptHistory[] = [
     {
         date: "Today",
@@ -32,7 +33,8 @@ const mockItems: TPromptHistory[] = [
     }
 ]
 export default function Sidebar() {
-    const { generatingContent, sidebarOpen } = useAppContext();
+    const { sidebarOpen } = useAppContext();
+    const {generatingContent} = useContentContext();
     return (
         <nav className={clsx(
             'h-screen overflow-x-hidden md:w-80 md:p-4 md:border-r lg:p-6 transition-all duration-500', sidebarOpen ? 'w-1/2 border-r p-2' : 'w-0'

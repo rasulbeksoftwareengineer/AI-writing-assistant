@@ -1,37 +1,18 @@
 import ContentCreateForm from "@/components/dashboard/content-create-form";
 import ContentViewer from "@/components/dashboard/content-viewer";
-import { useAppContext } from "@/contexts/app.context";
-import { ContentCreateRequestParam } from "@/shared/types/content-create-request-params";
-import { generateArticle } from "@/utils/openai";
+import { useContentContext } from "@/contexts/content.context";
+import { TContentCreateRequestParam } from "@/shared/types/content-create-request-params";
 import { useState } from "react";
-import toast from "react-hot-toast";
 
 export default function DashboardHome() {
     
-    const { setGeneratingContent, generatingContent } = useAppContext();
+    const { generateContent, generatingContent } = useContentContext();
     
     const [content, setContent] = useState<string | null>(null);
     
-    const handleSubmit = async (params: ContentCreateRequestParam) => {
-        setGeneratingContent(true);
-        const { title, descrption } = params;
-        
-        try {
-        
-            const result = await generateArticle(title, descrption);
-        
-            setContent(result);
-        }
-        
-        catch (error) {
-        
-            console.error('[Error] Failed to generate article', error);
-            toast.error("Afsuski AI bilan bo'gliq muommolar mavjud.")
-        }
-
-        finally{
-            setGeneratingContent(false);
-        }
+    const handleSubmit = async (params: TContentCreateRequestParam) => {
+        const result = await generateContent(params);
+        setContent(result);
     }
     
     return (

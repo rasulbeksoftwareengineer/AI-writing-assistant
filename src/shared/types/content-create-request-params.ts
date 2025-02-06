@@ -1,4 +1,4 @@
-export type ContentCreateRequestParam = {
+export type TContentCreateRequestParam = {
     title: string;
-    descrption: string; 
+    description: string; 
 }
