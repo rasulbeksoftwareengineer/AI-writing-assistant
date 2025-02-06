@@ -1,7 +1,7 @@
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { z } from 'zod';
-import { ContentCreateRequestParam } from "@/shared/types/content-create-request-params";
+import { TContentCreateRequestParam } from "@/shared/types/content-create-request-params";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
@@ -9,12 +9,12 @@ import { Loader2 } from "lucide-react";
 
 type ContentCreateFormProps = {
     isLoading: boolean;
-    onSubmit: (params: ContentCreateRequestParam) => void;
+    onSubmit: (params: TContentCreateRequestParam) => void;
 }
 
 const formSchema = z.object({
     title: z.string().min(1, "Sizda eng kamida 1 symboldan iborat Mavzu bo'lishi kerak").max(500),
-    descrpition: z.string().min(1, "Sizda eng kamida 1 symboldan iborat Mavzu bo'lishi kerak").max(1000),
+    description: z.string().min(1, "Sizda eng kamida 1 symboldan iborat Mavzu bo'lishi kerak").max(1000),
 })
 
 export default function ContentCreateForm({
@@ -25,7 +25,7 @@ export default function ContentCreateForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
             title: '',
-            descrpition: ''
+            description: ''
         }
     })
 
@@ -51,10 +51,10 @@ export default function ContentCreateForm({
                     )}
                 />
                 <FormField
-                    control={form.control} name="descrpition"
+                    control={form.control} name="description"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Descrpition</FormLabel>
+                            <FormLabel>description</FormLabel>
                             <FormControl>
                                 <Input placeholder="Example: Write about react js in react-router-dom" disabled={isLoading} {...field} />
                             </FormControl>
