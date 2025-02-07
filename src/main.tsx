@@ -7,6 +7,8 @@ import DashboardHome from './pages/dashboard-home';
 import { AppContextProvider } from './contexts/app.context';
 import { Toaster } from 'react-hot-toast';
 import { ContentContextProvider } from './contexts/content.context';
+import DashboardContent from './pages/dashboard-content';
+import ContentNotFound from './components/dashboard/content-not-found';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -19,9 +21,14 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <DashboardHome />
+      },
+      {
+        path: 'content/:id',
+        element: <DashboardContent/>,
+        errorElement: <ContentNotFound />
       }
     ]
-  },
+  }
 ]);
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -1,18 +1,31 @@
-import { ClipboardIcon, ShareIcon, StarIcon } from 'lucide-react';
+import { ClipboardIcon, PencilIcon, Save, SaveOff, ShareIcon, StarIcon } from 'lucide-react';
 import { Button } from "../ui/button"
-import { Card, CardContent, CardFooter } from "../ui/card"
-import Markdown from 'react-markdown';
+import { Card, CardContent, CardFooter } from "../ui/card";
 import toast from 'react-hot-toast';
+import { useState } from 'react';
+import MDEditor from '@uiw/react-md-editor';
+import { TGeneratedContent } from '@/shared/types/generated-content';
 type ContentViewerProps = {
-    content: string
+    generetedContent: TGeneratedContent;
+    onSave: (generatedContent: TGeneratedContent) => void;
 }
-export default function ContentViewer({ content }: ContentViewerProps) {
+export default function ContentViewer({ generetedContent, onSave }: ContentViewerProps) {
+
+    enum Mode {
+        View,
+        Edit
+    }
+
+    const [editedContent, setEditedContent] = useState<string>(generetedContent.content)
+
+    const [mode, setMode] = useState<Mode>(Mode.View);
+
 
     const handleCopy = async () => {
         try {
-            
-            await navigator.clipboard.writeText(content);
-            
+
+            await navigator.clipboard.writeText(generetedContent.content);
+
             toast.success('Copy')
         }
 
@@ -22,25 +35,39 @@ export default function ContentViewer({ content }: ContentViewerProps) {
         }
     }
 
-    return (
+    const handleEdit = () => {
+        setMode(Mode.Edit);
+    }
+
+    const handleContentChange = (value?: string) => {
+        setEditedContent(value || '')
+    }
+
+    const handleCancel = () => {
+        setMode(Mode.View);
+        setEditedContent(generetedContent.content);
+    }
+
+    const handleSave = () => {
+        onSave({...generetedContent, content: editedContent});
+        setMode(Mode.View)
+    }
+
+    return mode === Mode.View ? (
 
         <Card className="mt-4 shadow-xl">
 
-            <CardContent className="p-4 md:p-6 lg:p-8">
-
-                <div className="prose lg:prose-xl">
-
-                    <Markdown>
-
-                        {content}
-
-                    </Markdown>
-
-                </div>
-
+            <CardContent className="p-4 md:p-6">
+                <MDEditor.Markdown source={editedContent} style={{ whiteSpace: 'pre-wrap' }} className='rounded p-4' />
             </CardContent>
 
             <CardFooter className="flex gap-2 justify-end">
+
+                <Button onClick={handleEdit}>
+
+                    <PencilIcon className="h-4 w-4" />
+
+                </Button>
 
                 <Button>
 
@@ -48,9 +75,9 @@ export default function ContentViewer({ content }: ContentViewerProps) {
 
                 </Button>
 
-                <Button  onClick={handleCopy}>
+                <Button onClick={handleCopy}>
 
-                    <ClipboardIcon className="h-4 w-4"/>
+                    <ClipboardIcon className="h-4 w-4" />
 
                 </Button>
 
@@ -58,12 +85,35 @@ export default function ContentViewer({ content }: ContentViewerProps) {
 
                     <StarIcon className="h-4 w-4" />
 
-
                 </Button>
 
             </CardFooter>
 
         </Card>
 
-    )
+    ) : <div>
+
+        <MDEditor
+            height={400}
+            className='mt-4'
+            value={editedContent}
+            onChange={handleContentChange}
+        />
+
+        <div className='mt-4 flex gap-2 border'>
+
+            <Button onClick={handleSave}>
+                Save
+                <Save className="h-4 w-4" />
+
+            </Button>
+
+            <Button variant='destructive' onClick={handleCancel}>
+                Cancel
+                <SaveOff className="h-4 w-4" />
+
+            </Button>
+        </div>
+
+    </div>
 }
