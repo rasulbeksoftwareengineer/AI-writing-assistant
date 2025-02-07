@@ -2,14 +2,20 @@ import { TContentCreateRequestParam } from "@/shared/types/content-create-reques
 import { TGeneratedContent } from "@/shared/types/generated-content";
 import { generateArticle } from "@/utils/openai";
 import { createContext, FC, ReactNode, useContext, useState } from "react";
+import {useLocalStorage} from 'react-use';
 import toast from "react-hot-toast";
-
+import { TPromptHistory, TPromptLinks } from "@/shared/types/prompt-history.type";
+import dayjs from 'dayjs';
+import { v4 as uuidv4 } from 'uuid';
 interface IContentContext {
     generatingContent: boolean;
     setGeneratingContent: (value: boolean) => void;
     generateContent: (
         params: TContentCreateRequestParam
-    ) => Promise<string | null>;
+    ) => Promise<string | null>
+
+    getPromptHistory: () => TPromptHistory[]
+
 }
 
 export const ContentContext = createContext<IContentContext | null>(null);
@@ -34,25 +40,37 @@ interface IProps {
 
 const ContentContextProvider: FC<IProps> = ({ children }) => {
     const [generatingContent, setGeneratingContent] = useState(false);
+
+    const [contentItems, setContentItems] = useLocalStorage<TGeneratedContent[]>(
+        'contentItems',
+        []
+    )
+
     const generateContent = async (params: TContentCreateRequestParam) => {
+
         let content = null;
+
+        getPromptHistory();
+
         setGeneratingContent(true);
+
         const { title, description } = params;
 
         try {
 
             content = await generateArticle(title, description);
-            
+
             if (content) {
+
                 const generatedContentItem: TGeneratedContent = {
-                    id: '12345',
+                    id: uuidv4(),
                     title,
                     description,
                     content,
                     createdAt: new Date()
                 }
 
-                localStorage.setItem('contentItems', JSON.stringify([generatedContentItem]));
+                setContentItems([generatedContentItem, ...(contentItems || [])]);
 
             }
         }
@@ -68,6 +86,38 @@ const ContentContextProvider: FC<IProps> = ({ children }) => {
         }
 
         return content;
+    };
+
+    const getPromptHistory = () : TPromptHistory[] => {
+
+        if (!contentItems) {
+        
+            return[];
+        
+        }
+
+        const groupedItems = contentItems.reduce((prev: {[data: string]: TPromptLinks[]}, next) => {
+
+            const date = dayjs(next.createdAt).format('MMM DD, YYYY')
+
+            if (!prev[date]) {
+                prev[date] = [];
+            }
+
+            prev[date].push({
+                title: next.title,
+                url: `/dashboard/content/${next.id}`,
+            });
+
+            return prev;
+
+        }, {});
+
+        return Object.keys(groupedItems).sort((a,b) => dayjs(b).diff(a)).map((date) => ({
+            date,
+            links: groupedItems[date]
+        }));
+        
     }
 
     return (
@@ -75,6 +125,7 @@ const ContentContextProvider: FC<IProps> = ({ children }) => {
             generatingContent,
             setGeneratingContent,
             generateContent,
+            getPromptHistory
         }}
         >
             {children}
