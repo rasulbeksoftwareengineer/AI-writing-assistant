@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Loader2 } from "lucide-react";
+import { Textarea } from "../ui/textarea";
 
 type ContentCreateFormProps = {
     isLoading: boolean;
@@ -56,7 +57,7 @@ export default function ContentCreateForm({
                         <FormItem>
                             <FormLabel>description</FormLabel>
                             <FormControl>
-                                <Input placeholder="Example: Write about react js in react-router-dom" disabled={isLoading} {...field} />
+                                <Textarea rows={5} placeholder="Example: Write about react js in react-router-dom" disabled={isLoading} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

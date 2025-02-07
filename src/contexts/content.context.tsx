@@ -2,7 +2,7 @@ import { TContentCreateRequestParam } from "@/shared/types/content-create-reques
 import { TGeneratedContent } from "@/shared/types/generated-content";
 import { generateArticle } from "@/utils/openai";
 import { createContext, FC, ReactNode, useContext, useState } from "react";
-import {useLocalStorage} from 'react-use';
+import { useLocalStorage } from 'react-use';
 import toast from "react-hot-toast";
 import { TPromptHistory, TPromptLinks } from "@/shared/types/prompt-history.type";
 import dayjs from 'dayjs';
@@ -12,9 +12,11 @@ interface IContentContext {
     setGeneratingContent: (value: boolean) => void;
     generateContent: (
         params: TContentCreateRequestParam
-    ) => Promise<string | null>
+    ) => Promise<TGeneratedContent | null>
 
-    getPromptHistory: () => TPromptHistory[]
+    getPromptHistory: () => TPromptHistory[];
+    getContentById: (id: string) => TGeneratedContent;
+    updateById: (id: string, generatedContent: TGeneratedContent) => void;
 
 }
 
@@ -48,9 +50,8 @@ const ContentContextProvider: FC<IProps> = ({ children }) => {
 
     const generateContent = async (params: TContentCreateRequestParam) => {
 
-        let content = null;
+        let generatedContent: TGeneratedContent | null = null;
 
-        getPromptHistory();
 
         setGeneratingContent(true);
 
@@ -58,11 +59,11 @@ const ContentContextProvider: FC<IProps> = ({ children }) => {
 
         try {
 
-            content = await generateArticle(title, description);
+            const content = await generateArticle(title, description);
 
             if (content) {
 
-                const generatedContentItem: TGeneratedContent = {
+                generatedContent = {
                     id: uuidv4(),
                     title,
                     description,
@@ -70,7 +71,7 @@ const ContentContextProvider: FC<IProps> = ({ children }) => {
                     createdAt: new Date()
                 }
 
-                setContentItems([generatedContentItem, ...(contentItems || [])]);
+                setContentItems([generatedContent, ...(contentItems || [])]);
 
             }
         }
@@ -85,18 +86,18 @@ const ContentContextProvider: FC<IProps> = ({ children }) => {
             setGeneratingContent(false);
         }
 
-        return content;
+        return generatedContent;
     };
 
-    const getPromptHistory = () : TPromptHistory[] => {
+    const getPromptHistory = (): TPromptHistory[] => {
 
         if (!contentItems) {
-        
-            return[];
-        
+
+            return [];
+
         }
 
-        const groupedItems = contentItems.reduce((prev: {[data: string]: TPromptLinks[]}, next) => {
+        const groupedItems = contentItems.reduce((prev: { [data: string]: TPromptLinks[] }, next) => {
 
             const date = dayjs(next.createdAt).format('MMM DD, YYYY')
 
@@ -106,18 +107,39 @@ const ContentContextProvider: FC<IProps> = ({ children }) => {
 
             prev[date].push({
                 title: next.title,
-                url: `/dashboard/content/${next.id}`,
+                url: `/chat/content/${next.id}`,
             });
 
             return prev;
 
         }, {});
 
-        return Object.keys(groupedItems).sort((a,b) => dayjs(b).diff(a)).map((date) => ({
+        return Object.keys(groupedItems).sort((a, b) => dayjs(b).diff(a)).map((date) => ({
             date,
             links: groupedItems[date]
         }));
-        
+
+    }
+
+    const getContentById = (id: string) => {
+        const generatedContent = contentItems?.find((item) => item.id === id);
+        if (!generatedContent) {
+            throw new Error('Content not found');
+        }
+
+        return generatedContent;
+
+    }
+
+    const updateById = (id: string, generatedContent: TGeneratedContent) => {
+        const updatedContenItems = contentItems?.map((item) => {
+            if (item.id === id) {
+                return generatedContent;
+            }
+            return item;
+        })
+
+        setContentItems(updatedContenItems || []);
     }
 
     return (
@@ -125,7 +147,9 @@ const ContentContextProvider: FC<IProps> = ({ children }) => {
             generatingContent,
             setGeneratingContent,
             generateContent,
-            getPromptHistory
+            getPromptHistory,
+            getContentById,
+            updateById
         }}
         >
             {children}
