@@ -1,10 +1,12 @@
-import { ClipboardIcon, PencilIcon, Save, SaveOff, ShareIcon, StarIcon } from 'lucide-react';
+import { ClipboardIcon, PencilIcon, Save, SaveOff, ShareIcon } from 'lucide-react';
 import { Button } from "../ui/button"
 import { Card, CardContent, CardFooter } from "../ui/card";
 import toast from 'react-hot-toast';
 import { useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import { TGeneratedContent } from '@/shared/types/generated-content';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import { TooltipProvider } from '@radix-ui/react-tooltip';
 type ContentViewerProps = {
     generetedContent: TGeneratedContent;
     onSave: (generatedContent: TGeneratedContent) => void;
@@ -49,7 +51,7 @@ export default function ContentViewer({ generetedContent, onSave }: ContentViewe
     }
 
     const handleSave = () => {
-        onSave({...generetedContent, content: editedContent});
+        onSave({ ...generetedContent, content: editedContent });
         setMode(Mode.View)
     }
 
@@ -62,31 +64,38 @@ export default function ContentViewer({ generetedContent, onSave }: ContentViewe
             </CardContent>
 
             <CardFooter className="flex gap-2 justify-end">
-
-                <Button onClick={handleEdit}>
-
-                    <PencilIcon className="h-4 w-4" />
-
-                </Button>
-
-                <Button>
-
-                    <ShareIcon className="h-4 w-4" />
-
-                </Button>
-
-                <Button onClick={handleCopy}>
-
-                    <ClipboardIcon className="h-4 w-4" />
-
-                </Button>
-
-                <Button>
-
-                    <StarIcon className="h-4 w-4" />
-
-                </Button>
-
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleEdit}>
+                                <PencilIcon className="h-4 w-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Edit</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button>
+                                <ShareIcon className="h-4 w-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Share</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleCopy}>
+                                <ClipboardIcon className="h-4 w-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Copy</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </CardFooter>
 
         </Card>
@@ -105,13 +114,11 @@ export default function ContentViewer({ generetedContent, onSave }: ContentViewe
             <Button onClick={handleSave}>
                 Save
                 <Save className="h-4 w-4" />
-
             </Button>
 
             <Button variant='destructive' onClick={handleCancel}>
                 Cancel
                 <SaveOff className="h-4 w-4" />
-
             </Button>
         </div>
 
