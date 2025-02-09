@@ -10,10 +10,17 @@ import { ContentContextProvider } from './contexts/content.context';
 import DashboardContent from './pages/dashboard-content';
 import ContentNotFound from './components/dashboard/content-not-found';
 import Share from './pages/share';
+import AuthLayout from './components/layouts/auth-layouts';
+import Register from './components/auth/register';
+import { AuthProvider } from './contexts/auth.context';
 const router = createBrowserRouter([
   {
     path: '/',
     element: <div>Hello world!</div>
+  },
+  {
+    path: 'login',
+    element: <h1 className="text-5xl">Login!</h1>,
   },
   {
     path: '/chat',
@@ -25,24 +32,36 @@ const router = createBrowserRouter([
       },
       {
         path: 'content/:id',
-        element: <DashboardContent/>,
+        element: <DashboardContent />,
         errorElement: <ContentNotFound />
       }
     ]
   },
   {
     path: 'share/:id',
-    element: <Share/>,
-    errorElement: <ContentNotFound/>
+    element: <Share />,
+    errorElement: <ContentNotFound />
+  },
+  {
+    path: 'auth',
+    element: <AuthLayout />,
+    children: [
+      {
+        path: 'register',
+        element: <Register />
+      }
+    ]
   }
 ]);
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Toaster />
     <AppContextProvider>
-      <ContentContextProvider>
-        <RouterProvider router={router} />
-      </ContentContextProvider>
+      <AuthProvider>
+        <ContentContextProvider>
+          <RouterProvider router={router} />
+        </ContentContextProvider>
+      </AuthProvider>
     </AppContextProvider>
   </StrictMode>,
 )
