@@ -55,6 +55,22 @@ export default function ContentViewer({ generetedContent, onSave }: ContentViewe
         setMode(Mode.View)
     }
 
+    const handleShare = async () => {
+        try {
+
+            const {origin} = window.location;
+
+            await navigator.clipboard.writeText(`${origin}/share/${generetedContent.id}`);
+
+            toast.success('Share link successfuly copied to clipboard')
+        }
+
+        catch (e) {
+            console.error('[Error] failed to copy clipboard', e);
+            toast.error('No Copy')
+        }
+    }
+
     return mode === Mode.View ? (
 
         <Card className="mt-4 shadow-xl">
@@ -77,7 +93,7 @@ export default function ContentViewer({ generetedContent, onSave }: ContentViewe
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button>
+                            <Button onClick={handleShare}>
                                 <ShareIcon className="h-4 w-4" />
                             </Button>
                         </TooltipTrigger>
