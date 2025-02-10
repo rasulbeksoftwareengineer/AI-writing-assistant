@@ -14,6 +14,7 @@ import AuthLayout from './components/layouts/auth-layouts';
 import Register from './components/auth/register';
 import { AuthProvider } from './contexts/auth.context';
 import Login from './components/auth/login';
+import ProtectedRoute from './components/auth/protected-route';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/chat',
-    element: <DashboardLayouts />,
+    element: <ProtectedRoute><DashboardLayouts /></ProtectedRoute>,
     children: [
       {
         index: true,
