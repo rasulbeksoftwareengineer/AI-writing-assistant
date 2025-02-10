@@ -4,9 +4,10 @@ import { z } from 'zod';
 import { TContentCreateRequestParam } from "@/shared/types/content-create-request-params";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Loader2 } from "lucide-react";
 import { Textarea } from "../ui/textarea";
+import { useTranslation } from "react-i18next";
 
 type ContentCreateFormProps = {
     isLoading: boolean;
@@ -21,6 +22,8 @@ const formSchema = z.object({
 export default function ContentCreateForm({
     isLoading, onSubmit
 }: ContentCreateFormProps) {
+
+    const {t} = useTranslation('chat');
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -43,10 +46,11 @@ export default function ContentCreateForm({
                     control={form.control} name="title"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Title</FormLabel>
+                            <FormLabel>{t('title')}</FormLabel>
                             <FormControl>
                                 <Input placeholder="Example: React js about in BrowserRouter" disabled={isLoading} {...field} />
                             </FormControl>
+                            <FormDescription>{t('titleHint')}</FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -55,17 +59,18 @@ export default function ContentCreateForm({
                     control={form.control} name="description"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>description</FormLabel>
+                            <FormLabel>{t('description')}</FormLabel>
                             <FormControl>
-                                <Textarea rows={5} placeholder="Example: Write about react js in react-router-dom" disabled={isLoading} {...field} />
+                                <Textarea rows={5} placeholder={t('descriptionPlaceholder')} disabled={isLoading} {...field} />
                             </FormControl>
+                            <FormDescription>{t('descriptionHint')}</FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
                 <Button disabled={isLoading}>
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Generate
+                    {t('generate')}
                 </Button>
             </form>
         </Form>
