@@ -39,7 +39,7 @@ export default function Register() {
 
     return <Form {...form}>
         <form action="" onSubmit={form.handleSubmit(handleSubmit)} className="w-full">
-            <Card className="max-w-md mx-auto">e
+            <Card className="max-w-md mx-auto">
                 <CardHeader className="space-y-1">
                     <CardTitle className="text-2xl">Create an Account</CardTitle>
                     <CardDescription>Enter your login and password to create an account</CardDescription>
