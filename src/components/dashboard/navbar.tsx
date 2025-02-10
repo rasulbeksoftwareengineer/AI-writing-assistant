@@ -7,9 +7,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { useAppContext } from "@/contexts/app.context";
+import { useAuthContext } from "@/contexts/auth.context";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 export default function Navbar() {
 
+    const navigate = useNavigate();
+
     const {toggleSidebar} = useAppContext();
+
+    const { user, logoutUser} = useAuthContext();
+
+    const handleLogout = () =>{
+        logoutUser();
+        navigate('/auth/login');
+        toast.success('Successfuly logout')
+    }
 
     return <div className="border-b">
         <nav className="flex items-center justify-between p-4 h-16">
@@ -21,11 +34,11 @@ export default function Navbar() {
 
             </div>
             <DropdownMenu>
-                <DropdownMenuTrigger>Rasulbek</DropdownMenuTrigger>
+                <DropdownMenuTrigger>{user?.login}</DropdownMenuTrigger>
                 <DropdownMenuContent>
                     <DropdownMenuItem>Profile</DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Logout</DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
 

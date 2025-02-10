@@ -34,12 +34,12 @@ export default function Register() {
         const { login, password } = values;
         registerUser(login, password);
         toast.success('Accaout created');
-        navigate('/login')
+        navigate('/auth/login')
     }
 
     return <Form {...form}>
         <form action="" onSubmit={form.handleSubmit(handleSubmit)} className="w-full">
-            <Card className="max-w-md mx-auto">
+            <Card className="max-w-md mx-auto">e
                 <CardHeader className="space-y-1">
                     <CardTitle className="text-2xl">Create an Account</CardTitle>
                     <CardDescription>Enter your login and password to create an account</CardDescription>
