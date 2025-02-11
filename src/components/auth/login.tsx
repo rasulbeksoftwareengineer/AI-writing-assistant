@@ -7,7 +7,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useAuthContext } from "@/contexts/auth.context";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
     login: z.string().min(5).max(20),
@@ -31,7 +31,7 @@ export default function Login() {
             loginUser(login, password);
             toast.success('Login successful!');
             navigate('/chat')
-        } catch (error){
+        } catch (error) {
             if (error instanceof Error) {
                 toast.error(error.message)
             }
@@ -73,6 +73,7 @@ export default function Login() {
                             </FormItem>
                         )}
                     />
+                    <Link to='/auth/register' className="text-center">Sizda hisob yo'qmi</Link>
                 </CardContent>
                 <CardFooter>
                     <Button className="w-full">Login</Button>
