@@ -8,7 +8,6 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Loader2 } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { useTranslation } from "react-i18next";
-
 type ContentCreateFormProps = {
     isLoading: boolean;
     onSubmit: (params: TContentCreateRequestParam) => void;
