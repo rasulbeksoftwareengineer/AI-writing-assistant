@@ -7,7 +7,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useAuthContext } from "@/contexts/auth.context";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
     login: z.string().min(5).max(20),
@@ -85,6 +85,7 @@ export default function Register() {
                             </FormItem>
                         )}
                     />
+                    <Link to='/auth/login' className="text-center">Sizda hisob bormi</Link>
                 </CardContent>
                 <CardFooter>
                     <Button className="w-full">Create account</Button>
