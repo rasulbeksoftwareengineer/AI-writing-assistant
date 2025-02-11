@@ -15,8 +15,11 @@ import Register from './components/auth/register';
 import { AuthProvider } from './contexts/auth.context';
 import Login from './components/auth/login';
 import ProtectedRoute from './components/auth/protected-route';
-import './i18n'
+import './i18n';
+import './sentry.ts'
 import Homepage from './pages/homepage';
+
+
 
 const router = createBrowserRouter([
   {
@@ -62,6 +65,7 @@ const router = createBrowserRouter([
     ]
   }
 ]);
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Toaster />
