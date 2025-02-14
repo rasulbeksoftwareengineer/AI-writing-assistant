@@ -52,7 +52,7 @@ export default function Register() {
                             <FormItem>
                                 <FormLabel>Login</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="myLogin" {...field} />
+                                    <Input placeholder="myLogin" {...field} data-testid="@register/login" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -65,7 +65,7 @@ export default function Register() {
                             <FormItem>
                                 <FormLabel>Password</FormLabel>
                                 <FormControl>
-                                    <Input type="password" {...field} />
+                                    <Input type="password" {...field}  data-testid="@register/password"/>
                                 </FormControl>
                                 <FormMessage />
 
