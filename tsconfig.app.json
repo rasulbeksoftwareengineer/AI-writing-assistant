@@ -18,7 +18,10 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-
+    "types": [
+      "vitest/globals",
+      "@testing-library/jest-dom/vitest"
+    ],
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
@@ -26,5 +29,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src", "tests"]
 }

@@ -5,6 +5,8 @@ import { useAuthContext } from '@/contexts/auth.context.tsx';
 
 export default function Hero() {
   const { user } = useAuthContext();
+  console.log(user);
+  
   return (
     <div className="bg-white">
       <header className="fixed inset-x-0 top-0 z-50 bg-white">
@@ -47,11 +49,11 @@ export default function Hero() {
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               {user ? (
-                <Link to="/chat">
+                <Link to="/chat" data-testid="@hero/chat-link">
                   <Button size="lg">Go to the Chat</Button>
                 </Link>
               ) : (
-                <Link to="/auth/register">
+                <Link to="/auth/register" data-testid="@hero/register-link">
                   <Button size="lg">Get started</Button>
                 </Link>
               )}
